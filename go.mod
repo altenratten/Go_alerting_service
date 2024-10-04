@@ -1,3 +1,3 @@
 module github.com/altenratten/Go_alerting_service
 
-go 1.23.1
+go 1.22.7
