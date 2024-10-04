@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -10,21 +9,20 @@ import (
 var gstorage = make(map[string]float64)
 var cstorage = make(map[string]int64)
 
-func mainPage (w http.ResponseWriter, r *http.Request) {
+func mainPage(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(`http.StatusNotFound`))
 	// body := fmt.Sprintf("Method: %s\r\n", req.Method)
-    // body += "Header ===============\r\n"
-    // for k, v := range req.Header {
-    //     body += fmt.Sprintf("%s: %v\r\n", k, v)
-    // }
-    // body += "Query parameters ===============\r\n"
+	// body += "Header ===============\r\n"
+	// for k, v := range req.Header {
+	//     body += fmt.Sprintf("%s: %v\r\n", k, v)
+	// }
+	// body += "Query parameters ===============\r\n"
 	// body += `<a href="http://127.0.0.1:8080/update/gggg/rrr/21">link text</a>`
-    // for k, v := range req.URL.Query() {
-    //     body += fmt.Sprintf("%s: %v\r\n", k, v)
-    // }
-    // res.Write([]byte(body))
+	// for k, v := range req.URL.Query() {
+	//     body += fmt.Sprintf("%s: %v\r\n", k, v)
+	// }
+	// res.Write([]byte(body))
 }
-
 
 func Handlers(w http.ResponseWriter, r *http.Request) {
 	// get the value for the greeting wildcard.
@@ -42,7 +40,7 @@ func Handlers(w http.ResponseWriter, r *http.Request) {
 		gstorage[n] = s
 
 		jsonString, _ := json.Marshal(gstorage)
-		
+
 		w.Write([]byte(jsonString))
 
 	case `counter`:
@@ -54,7 +52,7 @@ func Handlers(w http.ResponseWriter, r *http.Request) {
 		cstorage[n] = s
 
 		// jsonString, _ := json.Marshal(gstorage)
-		
+
 		// w.Write([]byte(jsonString))
 
 	default:
@@ -68,7 +66,7 @@ func main() {
 	mux.HandleFunc("/", mainPage)
 	mux.HandleFunc("/update/{type}/{name}/{value}", Handlers)
 
-    //mux.Handle(`POST /update/{type}/{name}/{value}`, Handlers.UpdateHandlers(storage))
+	//mux.Handle(`POST /update/{type}/{name}/{value}`, Handlers.UpdateHandlers(storage))
 
 	err := http.ListenAndServe(":8080", mux)
 	if err != nil {
