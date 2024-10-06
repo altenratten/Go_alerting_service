@@ -9,21 +9,6 @@ import (
 var gstorage = make(map[string]float64)
 var cstorage = make(map[string]int64)
 
-func mainPage(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(`http.StatusNotFound`))
-	// body := fmt.Sprintf("Method: %s\r\n", req.Method)
-	// body += "Header ===============\r\n"
-	// for k, v := range req.Header {
-	//     body += fmt.Sprintf("%s: %v\r\n", k, v)
-	// }
-	// body += "Query parameters ===============\r\n"
-	// body += `<a href="http://127.0.0.1:8080/update/gggg/rrr/21">link text</a>`
-	// for k, v := range req.URL.Query() {
-	//     body += fmt.Sprintf("%s: %v\r\n", k, v)
-	// }
-	// res.Write([]byte(body))
-}
-
 func Handlers(w http.ResponseWriter, r *http.Request) {
 	// get the value for the greeting wildcard.
 	t := r.PathValue("type")
@@ -35,36 +20,52 @@ func Handlers(w http.ResponseWriter, r *http.Request) {
 
 		s, err := strconv.ParseFloat(v, 64)
 		if err != nil {
-			w.Write([]byte(`http.StatusBadRequest`))
+			w.WriteHeader(http.StatusBadRequest)
 		}
 		gstorage[n] = s
 
-		jsonString, _ := json.Marshal(gstorage)
-
-		w.Write([]byte(jsonString))
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8") 
+		w.WriteHeader(http.StatusOK)
 
 	case `counter`:
 		s, err := strconv.ParseInt(v, 10, 64)
 		if err != nil {
-			w.Write([]byte(`http.StatusBadRequest`))
+			w.WriteHeader(http.StatusBadRequest)
 		}
+
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8") 
+		w.WriteHeader(http.StatusOK)
 
 		cstorage[n] = s
 
-		// jsonString, _ := json.Marshal(gstorage)
-
-		// w.Write([]byte(jsonString))
-
 	default:
-		w.Write([]byte(`http.StatusNotFound`))
+		w.WriteHeader(http.StatusNotFound)
 	}
+}
+
+func storageHandlers(w http.ResponseWriter, r *http.Request){
+	body := `------gstorage------\r\n`
+    w.Write([]byte(body))
+	jsonString, err := json.Marshal(gstorage)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	w.Write([]byte(jsonString))
+	body2 := `------cstorage------\r\n`
+    w.Write([]byte(body2))
+	jsonString2, err := json.Marshal(cstorage)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+	w.Write([]byte(jsonString2))
 }
 
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", mainPage)
+	// mux.HandleFunc("/", mainPage)
 	mux.HandleFunc("/update/{type}/{name}/{value}", Handlers)
+	mux.HandleFunc("/storage/", storageHandlers)
 
 	//mux.Handle(`POST /update/{type}/{name}/{value}`, Handlers.UpdateHandlers(storage))
 
