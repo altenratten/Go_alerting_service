@@ -38,8 +38,9 @@ func Handlers(w http.ResponseWriter, r *http.Request) {
 
 		cstorage[n] = s
 
+
 	default:
-		w.WriteHeader(http.StatusNotFound)
+		w.WriteHeader(http.StatusBadRequest)
 	}
 }
 
