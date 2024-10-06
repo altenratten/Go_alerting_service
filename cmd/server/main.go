@@ -64,7 +64,6 @@ func storageHandlers(w http.ResponseWriter, r *http.Request){
 func main() {
 	mux := http.NewServeMux()
 
-	// mux.HandleFunc("/", mainPage)
 	mux.HandleFunc("/update/{type}/{name}/{value}", Handlers)
 	mux.HandleFunc("/storage/", storageHandlers)
 
